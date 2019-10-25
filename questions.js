@@ -99,15 +99,12 @@ function extractKeys(json, jsonFormat = 'nesting', prefix = '') {
         return Object.keys(json)
     }
 }
-
 function keyNameValidate(keyName) {
     if (keyName) {
         return true
     }
     return 'Please input key name!'
 }
-
-
 function createActionQuestions(keyList, jsonFormat) {
     return [
         {
