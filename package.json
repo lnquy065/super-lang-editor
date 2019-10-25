@@ -1,0 +1,39 @@
+{
+  "name": "super-lang-editor",
+  "version": "1.1.5",
+  "description": "Edit language file like a boss!!",
+  "main": "index.js",
+  "keywords": [
+    "i18next",
+    "json",
+    "language",
+    "editor",
+    "cli"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "lnquy065",
+  "license": "ISC",
+  "dependencies": {
+    "@octokit/rest": "^16.33.1",
+    "chalk": "^2.4.2",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "configstore": "^5.0.0",
+    "figlet": "^1.2.4",
+    "find": "^0.3.0",
+    "inquirer": "^7.0.0",
+    "inquirer-autocomplete-prompt": "^1.0.1",
+    "iso-639-1": "^2.1.0",
+    "lodash": "^4.17.15",
+    "minimist": "^1.2.0",
+    "simple-git": "^1.126.0",
+    "table": "^5.4.6",
+    "touch": "^3.1.0"
+  },
+  "bin": {
+    "super-lang": "./index.js"
+  }
+}
