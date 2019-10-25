@@ -14,6 +14,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
+  "repository" : {
+    "type" : "git",
+    "url": "https://github.com/lnquy065/super-lang-editor"
+  },
   "author": "lnquy065",
   "license": "ISC",
   "dependencies": {
@@ -35,5 +39,9 @@
   },
   "bin": {
     "super-lang": "./index.js"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/lnquy065/super-lang-editor/issues"
+  },
+  "homepage": "https://github.com/lnquy065/super-lang-editor"
 }
