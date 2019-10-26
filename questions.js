@@ -16,6 +16,7 @@ const JSONfiles = find.fileSync(/\.json$/, directoryPath)
     .map(path => path.replace(directoryPath, ''));
 
 module.exports = {
+    directoryPath: directoryPath,
     JSONfiles: JSONfiles,
     languageConfigQuestions: [
         {
@@ -38,8 +39,7 @@ module.exports = {
             type: 'checkbox',
             message: 'Select language files: ',
             choices: function (current) {
-                const files = JSONfiles;
-                return files
+                return JSONfiles
                     .filter(file => path.extname(file).toLowerCase() === '.json')
                     .map(file => {
                         const langName = ISO6391.getName(path.basename(file, '.json'))
@@ -103,7 +103,7 @@ function keyNameValidate(keyName) {
     if (keyName) {
         return true
     }
-    return 'Please input key name!'
+    return 'Please input path name!'
 }
 function createActionQuestions(keyList, jsonFormat) {
     return [
@@ -128,6 +128,11 @@ function createActionQuestions(keyList, jsonFormat) {
                     short: 'Add New'
                 },
                 {
+                    name: 'Sort',
+                    value: 'sort',
+                    short: 'Sort'
+                },
+                {
                     name: 'Exit',
                     value: 'exit',
                     short: 'Exit'
@@ -135,9 +140,27 @@ function createActionQuestions(keyList, jsonFormat) {
             ]
         },
         {
+            name: 'sort',
+            type: 'list',
+            message: 'Sort all language keys:',
+            when: function (current) {
+                return current.action === 'sort'
+            },
+            choices: [
+                {
+                    name: 'A-Z',
+                    value: 'asc'
+                },
+                {
+                    name: 'Z-A',
+                    value: 'desc'
+                }
+            ]
+        },
+        {
             name: 'editKeyName',
             type: 'autocomplete',
-            message: 'Input key name to edit:',
+            message: 'Input path name to edit:',
             when: function (current) {
                 return current.action === 'edit'
             },
@@ -148,7 +171,7 @@ function createActionQuestions(keyList, jsonFormat) {
         {
             name: 'removeKeyName',
             type: 'autocomplete',
-            message: 'Input key name to remove:',
+            message: 'Input path name to remove:',
             when: function (current) {
                 return current.action === 'remove'
             },
@@ -159,7 +182,7 @@ function createActionQuestions(keyList, jsonFormat) {
         {
             name: 'addKeyName',
             type: 'autocomplete',
-            message: 'Input key name to add:',
+            message: 'Input path name to add:',
             when: function (current) {
                 return current.action === 'add'
             },

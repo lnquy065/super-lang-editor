@@ -1,9 +1,10 @@
 # SuperLangEditor
 CLI editor using for edit language files.
- - Supports Nesting and Inline i18next format.
  - Auto scan language file (ISO6391 standard and JSON extension: _**en.json, vi.json**_).
  - Supports edit, remove, add new language key with autocomplete hint.
  - Show change logs after modified.
+ - Supports Nesting and Inline i18next format (v1.1.6)
+ - Sort by key name (v1.2.0)
 #### Installation
 > npm install super-lang-editor -g
 
@@ -46,7 +47,7 @@ Inline format
 ```
 
 
-- SuperLang will scan all language files. Please choose files that you want to modify.
+- SuperLang will scans all language files. Please choose files that you want to modify.
 
 ```   ____                                  _                             
    / ___|   _   _   _ __     ___   _ __  | |       __ _   _ __     __ _ 
@@ -64,7 +65,7 @@ Inline format
 ```
 
 
-- Default language. Select default language, SuperLang will based on it to suggest lang key name for next steps.
+- Default language. Select default language, SuperLang will base on it to suggests language key name for next steps.
 
 ```$xslt
   ____                                  _                             
@@ -96,11 +97,12 @@ Inline format
 ❯ Edit 
   Remove 
   Add New 
+  Sort
   Exit 
 ```
 #### Features
 ##### Edit, Add New, Remove
-- Key name will be suggest below when you edit,add,remove.
+- Key name will be suggested below when you edit,add,remove.
 
 ```$xslt
   ____                                  _                             
@@ -136,9 +138,27 @@ Inline format
 ? [English - public/locales/en.json] title.[/home]: Home
 ? [Vietnamese - public/locales/vi.json] title.[/home]: Tra
 ```
-
+##### Sort by key name
+- All language files will be sorted by key name (A-Z | Z-A)
+```
+  ____                                  _                             
+ / ___|   _   _   _ __     ___   _ __  | |       __ _   _ __     __ _ 
+ \___ \  | | | | | '_ \   / _ \ | '__| | |      / _` | | '_ \   / _` |
+  ___) | | |_| | | |_) | |  __/ | |    | |___  | (_| | | | | | | (_| |
+ |____/   \__,_| | .__/   \___| |_|    |_____|  \__,_| |_| |_|  \__, |
+                 |_|                                            |___/ 
+  Version: 1.2.0 by lnquy065
+  JSON Format: nesting
+  Language list: 
+    - [assets/en.json]
+======================================================================
+? Select action:  Sort
+? Sort all language keys: (Use arrow keys)
+❯ A-Z 
+  Z-A 
+```
 ##### Show change logs
-- Change logs table will show up after language files were modified.
+- Change logs table will shows up after language files were modified.
 
 ```$xslt
   ____                                  _                             
