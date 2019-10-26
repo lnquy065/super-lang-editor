@@ -1,6 +1,6 @@
 {
   "name": "super-lang-editor",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Edit language file like a boss!!",
   "main": "index.js",
   "keywords": [
@@ -14,8 +14,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "repository" : {
-    "type" : "git",
+  "repository": {
+    "type": "git",
     "url": "https://github.com/lnquy065/super-lang-editor"
   },
   "author": "lnquy065",
