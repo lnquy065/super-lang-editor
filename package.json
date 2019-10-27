@@ -1,6 +1,6 @@
 {
   "name": "super-lang-editor",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Edit language file like a boss!!",
   "main": "index.js",
   "keywords": [
