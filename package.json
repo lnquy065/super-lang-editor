@@ -1,7 +1,7 @@
 {
   "name": "super-lang-editor",
   "version": "1.2.1",
-  "description": "Edit language file like a boss!!",
+  "description": "Edit language files like a boss!!",
   "main": "index.js",
   "keywords": [
     "i18next",
