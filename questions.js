@@ -72,7 +72,8 @@ module.exports = {
     ],
     createActionQuestions: createActionQuestions,
     createLangObj: createLangObj,
-    extractKeys: extractKeys
+    extractKeys: extractKeys,
+    keyNameValidate: keyNameValidate
 }
 
 function createAutocompleteSource(current, input, keyList, jsonFormat) {
@@ -104,7 +105,7 @@ function keyNameValidate(keyName) {
     if (keyName) {
         return true
     }
-    return 'Please input path name!'
+    return 'Please input lang key name!'
 }
 function createActionQuestions(keyList, jsonFormat) {
     return [
@@ -117,6 +118,11 @@ function createActionQuestions(keyList, jsonFormat) {
                     name: 'Edit',
                     value: 'edit',
                     short: 'Edit'
+                },
+                {
+                    name: 'Rename/Move',
+                    value: 'rename',
+                    short: 'Rename/Move'
                 },
                 {
                     name: 'Remove',
@@ -161,7 +167,7 @@ function createActionQuestions(keyList, jsonFormat) {
         {
             name: 'editKeyName',
             type: 'autocomplete',
-            message: 'Input path name to edit:',
+            message: 'Input language key name to edit:',
             when: function (current) {
                 return current.action === 'edit'
             },
@@ -170,9 +176,20 @@ function createActionQuestions(keyList, jsonFormat) {
             validate: keyNameValidate
         },
         {
+            name: 'renameKeyName',
+            type: 'autocomplete',
+            message: 'Input language key name to rename/move:',
+            when: function (current) {
+                return current.action === 'rename'
+            },
+            suggestOnly: true,
+            source: (current, input) => createAutocompleteSource(current, input, keyList, jsonFormat),
+            validate: keyNameValidate
+        },
+        {
             name: 'removeKeyName',
             type: 'autocomplete',
-            message: 'Input path name to remove:',
+            message: 'Input language key name to remove:',
             when: function (current) {
                 return current.action === 'remove'
             },
@@ -183,7 +200,7 @@ function createActionQuestions(keyList, jsonFormat) {
         {
             name: 'addKeyName',
             type: 'autocomplete',
-            message: 'Input path name to add:',
+            message: 'Input language key name to add:',
             when: function (current) {
                 return current.action === 'add'
             },

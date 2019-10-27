@@ -39,6 +39,18 @@ function modifyLangCol(langs) {
     changeLogs[0] = ['Action', 'Lang Key', ...langs]
 }
 
+function renameKey(content, currentName, newName) {
+    if (JSON_FORMAT === 'nesting') {
+        const tempValue = _.get(content, currentName);
+        _.unset(content, currentName);
+        _.set(content, newName, tempValue);
+    }
+    if (JSON_FORMAT === 'inline') {
+        content[newName] = content[currentName]
+        delete content[currentName]
+    }
+}
+
 function sortJSON(json, order = 'asc') {
     if (typeof json === 'object') {
         const keys = Object.keys(json);
@@ -189,6 +201,33 @@ function renderActionMenu(defaultLanguage, langObjects) {
                         writeToFile(langObjects)
                         addChangeLog(chalk.yellow('Edit'), key, langValues)
                         renderActionMenu(defaultLanguage, langObjects)
+                    })
+            }
+
+            // rename key
+            if (actionAnswers.renameKeyName) {
+                const langKey = actionAnswers.renameKeyName
+
+                return inquirer.prompt([{
+                    name: 'keyName',
+                    message: 'Input new language key name: ',
+                    type: 'input',
+                    validate: Question.keyNameValidate
+                }])
+                    .then( result => {
+                        if (result.keyName) {
+                            const newKeyName = result.keyName;
+                            let langValues = []
+                            for (let obj of langObjects) {
+                                renameKey(obj.content, langKey, newKeyName);
+                                langValues.push(newKeyName);
+                            }
+
+                            writeToFile(langObjects)
+                            addChangeLog(chalk.yellow('Rename'), langKey, langValues)
+                            renderActionMenu(defaultLanguage, langObjects)
+
+                        }
                     })
             }
 
