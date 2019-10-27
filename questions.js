@@ -6,6 +6,7 @@ const find = require('find');
 const path = require('path');
 const fs = require('fs');
 const ISO6391 = require('iso-639-1');
+const _ = require('lodash');
 
 const directoryPath = path.join(process.cwd(), '/');
 
@@ -86,7 +87,7 @@ function createAutocompleteSource(current, input, keyList, jsonFormat) {
 
 function extractKeys(json, jsonFormat = 'nesting', prefix = '') {
     if (jsonFormat === 'nesting') {
-        if (typeof json === 'object') {
+        if (typeof json === 'object' && !_.isEmpty(json)) {
             const keyList = Object.keys(json);
             let resultStr = [];
             for (const key of keyList) {
