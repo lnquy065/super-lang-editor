@@ -1,7 +1,7 @@
 # SuperLangEditor (SLE)
 CLI editor using for edit multi language files. Start SuperLangEditor at every where in your project, it will scans all of language files. Now you can modify those files by features below.
 
- - Auto scan language file (ISO6391 standard and JSON extension: _**en.json, vi.json**_).
+ - Auto scan language file (ISO6391 standard or JSON extension)(v1.4.1).
  - Supports edit, remove, add new language key with autocomplete hint.
  - Show change logs after modified.
  - Supports Nesting and Inline format (v1.1.6)

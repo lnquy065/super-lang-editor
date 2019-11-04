@@ -13,10 +13,18 @@ const inquirer = require('inquirer');
 const directoryPath = path.join(process.cwd(), '/');
 
 // find default folder
-const JSONfiles = find.fileSync(/\.json$/, directoryPath)
+const iso931Files = find.fileSync(/\.json$/, directoryPath)
     .filter(path => !path.includes('node_modules'))
     .filter(file => ISO6391.getName(path.basename(file, '.json')))
     .map(path => path.replace(directoryPath, ''));
+
+const otherJSONFiles = find.fileSync(/\.json$/, directoryPath)
+    .filter(path => !path.includes('node_modules'))
+    .filter(file => !ISO6391.getName(path.basename(file, '.json')))
+    .map(path => path.replace(directoryPath, ''));
+
+const JSONfiles = [...iso931Files, ...otherJSONFiles]
+
 
 module.exports = {
     directoryPath: directoryPath,
