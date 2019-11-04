@@ -94,3 +94,4 @@ typings/
 .npmignore
 assets/*
 package-lock.json
+yarn.lock

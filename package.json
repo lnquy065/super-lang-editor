@@ -8,7 +8,11 @@
     "json",
     "language",
     "editor",
-    "cli"
+    "cli",
+    "ngx translate",
+    "react",
+    "angular",
+    "vue"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

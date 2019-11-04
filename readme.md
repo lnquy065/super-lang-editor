@@ -4,9 +4,31 @@ CLI editor using for edit multi language files. Start SuperLangEditor at every w
  - Auto scan language file (ISO6391 standard and JSON extension: _**en.json, vi.json**_).
  - Supports edit, remove, add new language key with autocomplete hint.
  - Show change logs after modified.
- - Supports Nesting and Inline i18next format (v1.1.6)
+ - Supports Nesting and Inline format (v1.1.6)
  - Sort by key name (v1.2.0)
  - Rename/Move key (v1.3.0)
+ - Search by key name (v1.4.0)
+ - Naming convention converter (v1.4.0)
+ 
+```
+  ____                                  _                             
+ / ___|   _   _   _ __     ___   _ __  | |       __ _   _ __     __ _ 
+ \___ \  | | | | | '_ \   / _ \ | '__| | |      / _` | | '_ \   / _` |
+  ___) | | |_| | | |_) | |  __/ | |    | |___  | (_| | | | | | | (_| |
+ |____/   \__,_| | .__/   \___| |_|    |_____|  \__,_| |_| |_|  \__, |
+                 |_|                                            |___/ 
+======================================================================
+? Select action:  (Use arrow keys)
+❯ Search by key 
+  Edit values 
+  Rename/move key 
+  Remove key 
+  Add new key/values 
+  Sort by key 
+  Key naming convention converter 
+(Move up and down to reveal more choices)
+
+```
  
 ### Installation
 > npm install super-lang-editor -g
@@ -305,6 +327,49 @@ And result...
   }
 }
 ```
+###### Naming convention converter
+We support 3 of naming conventions
+```
+? Convert all language key name to: (Use arrow keys)
+❯ Camel case 
+  Kebab case 
+  Snake case 
+```
+
+```
+- Camel case
+{
+  "profile": {
+    "home": {
+      "hello": "Say hello",
+      "myWorld": "World"
+    },
+    "myName": "My Name"
+  }
+}
+- Kebab case
+{
+  "profile": {
+    "home": {
+      "hello": "Say hello",
+      "my-world": "World"
+    },
+    "my-name": "My Name"
+  }
+}
+- Snake case
+{
+  "profile": {
+    "home": {
+      "hello": "Say hello",
+      "my_world": "World"
+    },
+    "my_name": "My Name"
+  }
+}
+```
+
+
 #### Show change logs
 - Change logs table will shows up after language files were modified.
 
