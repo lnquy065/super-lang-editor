@@ -7,6 +7,8 @@ const path = require('path');
 const fs = require('fs');
 const ISO6391 = require('iso-639-1');
 const _ = require('lodash');
+const inquirer = require('inquirer');
+
 
 const directoryPath = path.join(process.cwd(), '/');
 
@@ -73,7 +75,37 @@ module.exports = {
     createActionQuestions: createActionQuestions,
     createLangObj: createLangObj,
     extractKeys: extractKeys,
-    keyNameValidate: keyNameValidate
+    keyNameValidate: keyNameValidate,
+    confirmQuestion: confirmQuestion,
+    confirmQuestionWithPromise: confirmQuestionWithPromise
+}
+
+function confirmQuestion(question) {
+    const questionConfig = [{
+        name: 'confirm',
+        type: 'confirm',
+        message: question
+    }];
+    return inquirer.prompt(questionConfig);
+}
+
+function confirmQuestionWithPromise(question) {
+    const questionConfig = [{
+        name: 'confirm',
+        type: 'confirm',
+        message: question
+    }];
+    return new Promise( (resolve, reject) => {
+        inquirer.prompt(questionConfig)
+            .then(result => {
+                if (result.confirm) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            })
+    });
+
 }
 
 function createAutocompleteSource(current, input, keyList, jsonFormat) {
@@ -107,6 +139,12 @@ function keyNameValidate(keyName) {
     }
     return 'Please input lang key name!'
 }
+function fileNameValidate(fileName) {
+    if (fileName) {
+        return true
+    }
+    return 'Please input file name!'
+}
 function createActionQuestions(keyList, jsonFormat) {
     return [
         {
@@ -115,30 +153,43 @@ function createActionQuestions(keyList, jsonFormat) {
             message: 'Select action: ',
             choices: [
                 {
-                    name: 'Edit',
+                    name: 'Search by key',
+                    value: 'search',
+                },
+                {
+                    name: 'Edit values',
                     value: 'edit',
                     short: 'Edit'
                 },
                 {
-                    name: 'Rename/Move',
+                    name: 'Rename/move key',
                     value: 'rename',
                     short: 'Rename/Move'
                 },
                 {
-                    name: 'Remove',
+                    name: 'Remove key',
                     value: 'remove',
                     short: 'Remove'
                 },
                 {
-                    name: 'Add New',
+                    name: 'Add new key/values',
                     value: 'add',
                     short: 'Add New'
                 },
                 {
-                    name: 'Sort',
+                    name: 'Sort by key',
                     value: 'sort',
                     short: 'Sort'
                 },
+                {
+                    name: 'Key naming convention converter',
+                    value: 'namingConventionConverter',
+                    short: 'Naming convention converter'
+                },
+                // {
+                //     name: 'Clone to',
+                //     value: 'cloneTo',
+                // },
                 {
                     name: 'Exit',
                     value: 'exit',
@@ -163,6 +214,25 @@ function createActionQuestions(keyList, jsonFormat) {
                     value: 'desc'
                 }
             ]
+        },
+        {
+            name: 'searchKeyName',
+            type: 'autocomplete',
+            message: 'Input language key name to view values: ',
+            when: function (current) {
+                return current.action === 'search'
+            },
+            source: (current, input) => createAutocompleteSource(current, input, keyList, jsonFormat),
+            validate: keyNameValidate
+        },
+        {
+            name: 'cloneToFile',
+            type: 'input',
+            message: 'Input new file name to clone (not include extension, file will be overwrote if existed): ',
+            validate: fileNameValidate,
+            when: function (current) {
+                return current.action === 'cloneTo'
+            },
         },
         {
             name: 'editKeyName',
@@ -207,6 +277,28 @@ function createActionQuestions(keyList, jsonFormat) {
             suggestOnly: true,
             source: (current, input) => createAutocompleteSource(current, input, keyList, jsonFormat),
             validate: keyNameValidate
+        },
+        {
+            name: 'namingConvention',
+            type: 'list',
+            message: 'Convert all language key name to:',
+            when: function (current) {
+                return current.action === 'namingConventionConverter'
+            },
+            choices: [
+                {
+                    name: 'Camel case',
+                    value: 'camelCase'
+                },
+                {
+                    name: 'Kebab case',
+                    value: 'kebabCase'
+                },
+                {
+                    name: 'Snake case',
+                    value: 'snakeCase'
+                }
+            ]
         }
     ]
 }

@@ -10,7 +10,7 @@ const ISO6391 = require('iso-639-1');
 const Question = require('./questions');
 const {table} = require('table');
 const pkg = require('./package');
-const _ = require('lodash');
+const JSONUtils = require('./json-utils');
 inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 
 const VERSION = pkg.version;
@@ -39,44 +39,6 @@ function modifyLangCol(langs) {
     changeLogs[0] = ['Action', 'Lang Key', ...langs]
 }
 
-function renameKey(content, currentName, newName) {
-    if (JSON_FORMAT === 'nesting') {
-        const tempValue = _.get(content, currentName);
-        _.unset(content, currentName);
-        _.set(content, newName, tempValue);
-    }
-    if (JSON_FORMAT === 'inline') {
-        content[newName] = content[currentName]
-        delete content[currentName]
-    }
-}
-
-function sortJSON(json, order = 'asc') {
-    if (typeof json === 'object') {
-        const keys = Object.keys(json);
-        const sortedKeys = keys.sort((a, b) => {
-            if (order === 'asc') {
-                return a.localeCompare(b);
-            }
-            if (order === 'desc') {
-                return b.localeCompare(a);
-            }
-        })
-
-        console.log('sort array:', sortedKeys)
-
-        let sortedObject = {};
-        for (const key of sortedKeys) {
-            sortedObject = {
-                ...sortedObject,
-                [key]: sortJSON(json[key], order)
-            }
-        }
-        return sortedObject
-    } else {
-        return json;
-    }
-}
 
 function renderConfig() {
     if (JSON_FORMAT) {
@@ -111,47 +73,6 @@ function writeToFile(langObjects) {
     for (const obj of langObjects) {
         fs.writeFileSync(obj.path, JSON.stringify(obj.content, null, 2));
     }
-    console.log(chalk.greenBright('--> UPDATED: ' + langObjects.map(obj => obj.path).join(', ')))
-}
-
-function formatLangKey(langKey) {
-    if (JSON_FORMAT === 'nesting') {
-        return langKey;
-    }
-    if (JSON_FORMAT === 'inline') {
-        return langKey.replace(/[\.\[\]]/g, '#');
-    }
-}
-
-function formatDefaultValue(obj, langKey) {
-    if (JSON_FORMAT === 'nesting') {
-        return _.get(obj, langKey);
-    }
-    if (JSON_FORMAT === 'inline') {
-        return obj[langKey]
-    }
-}
-
-
-
-function writeValue(obj, langKey, value) {
-    if (JSON_FORMAT === 'nesting') {
-        _.update(obj, langKey, function (n) {
-            return value;
-        });
-    }
-    if (JSON_FORMAT === 'inline') {
-        obj[langKey] = value;
-    }
-}
-
-function removeKey(obj, langKey) {
-    if (JSON_FORMAT === 'nesting') {
-        _.unset(obj, langKey);
-    }
-    if (JSON_FORMAT === 'inline') {
-        delete obj[langKey];
-    }
 }
 
 function renderActionMenu(defaultLanguage, langObjects) {
@@ -166,24 +87,59 @@ function renderActionMenu(defaultLanguage, langObjects) {
 
     inquirer.prompt(Question.createActionQuestions(keyList, JSON_FORMAT))
         .then( actionAnswers => {
-
             // exit
-            if (actionAnswers.exit) {
-                clear();
-                renderChangeLogsTable();
-                process.exit()
+            if (actionAnswers.action && actionAnswers.action === 'exit') {
+                Question.confirmQuestion('Do you want to exit?')
+                    .then(result => {
+                        if (result.confirm) {
+                            clear();
+                            renderChangeLogsTable();
+                            process.exit()
+                        } else {
+                            renderActionMenu(defaultLanguage, langObjects)
+                        }
+                    })
+            }
+
+            // search
+            if (actionAnswers.searchKeyName) {
+                const langKey = actionAnswers.searchKeyName;
+                for (const obj of  langObjects) {
+                    console.log(`[${obj.name} - ${obj.path}] ${langKey}: ${JSONUtils.formatDefaultValue(JSON_FORMAT, obj.content, langKey)}`)
+                }
+                inquirer.prompt({
+                    name: 'Enter to back!',
+                    type: 'input'
+                }).then(result => {
+                    renderActionMenu(defaultLanguage, langObjects)
+                })
+            }
+
+            // clone
+            if (actionAnswers.cloneToFile) {
+                const fileName = actionAnswers.cloneToFile;
+                const defaultLangObj = LANG_LIST[DEFAULT_LANG];
+                const langDirParts = defaultLangObj.path.split('/');
+                const newLangPath = langDirParts.shift().join('/') + '/' + fileName + '.json';
+                Question.confirmQuestionWithPromise('Also clone all values?')
+                    .then(() => {
+                        fs.writeFileSync(newLangPath, JSON.stringify(defaultLangObj.content, null, 2))
+                    })
+                    .catch(() => {
+
+                    })
             }
 
             // edit case
             if (actionAnswers.editKeyName) {
-                const langKey = actionAnswers.editKeyName
+                const langKey = actionAnswers.editKeyName;
                 let questions = []
                 for (const obj of  langObjects) {
                     questions.push({
                         name: ( obj.path + '_' + langKey).replace(/[\.\[\]]/g, '#'),
                         message: `[${obj.name} - ${obj.path}] ${langKey}:`,
                         type: 'input',
-                        default: formatDefaultValue(obj.content, langKey)
+                        default: JSONUtils.formatDefaultValue(JSON_FORMAT, obj.content, langKey)
                     })
                 }
 
@@ -194,12 +150,12 @@ function renderActionMenu(defaultLanguage, langObjects) {
                         for (let obj of langObjects) {
                             const value = result[ ( obj.path + '_' + langKey).replace(/[\.\[\]]/g, '#')];
                             langValues.push(value);
-                            writeValue(obj.content, langKey, value)
+                            JSONUtils.writeValue(JSON_FORMAT, obj.content, langKey, value)
                             // content.content[path] = value;
                         }
 
-                        writeToFile(langObjects)
-                        addChangeLog(chalk.yellow('Edit'), key, langValues)
+                        writeToFile(langObjects);
+                        addChangeLog(chalk.yellow('Edit'), key, langValues);
                         renderActionMenu(defaultLanguage, langObjects)
                     })
             }
@@ -219,7 +175,7 @@ function renderActionMenu(defaultLanguage, langObjects) {
                             const newKeyName = result.keyName;
                             let langValues = []
                             for (let obj of langObjects) {
-                                renameKey(obj.content, langKey, newKeyName);
+                                JSONUtils.renameKey(JSON_FORMAT, obj.content, langKey, newKeyName);
                                 langValues.push(newKeyName);
                             }
 
@@ -245,7 +201,7 @@ function renderActionMenu(defaultLanguage, langObjects) {
                             let langValues = []
                             for (let obj of langObjects) {
                                 langValues.push(obj.content[langKey]);
-                                removeKey(obj.content, langKey);
+                                JSONUtils.removeKey(JSON_FORMAT, obj.content, langKey);
                             }
 
                             writeToFile(langObjects)
@@ -254,6 +210,26 @@ function renderActionMenu(defaultLanguage, langObjects) {
 
                         }
                     })
+            }
+
+            // naming converter
+            if (actionAnswers.namingConvention) {
+                const namingConvention = actionAnswers.namingConvention;
+                Question.confirmQuestionWithPromise(`Do you want to format all key names to ${namingConvention}?`)
+                    .then( () => {
+                        let langValues = [];
+                        for (let obj of langObjects) {
+                            langValues.push(namingConvention);
+                            JSONUtils.convertNamingAllKeyName(JSON_FORMAT, obj.content, namingConvention);
+                        }
+
+                        writeToFile(langObjects);
+                        addChangeLog(chalk.blue('Naming convention convert'), 'All keys', langValues);
+                        renderActionMenu(defaultLanguage, langObjects);
+                    })
+                    .catch(() => {
+                        renderActionMenu(defaultLanguage, langObjects);
+                    });
             }
 
             // add new
@@ -275,7 +251,7 @@ function renderActionMenu(defaultLanguage, langObjects) {
                             const value = result[( obj.path + '_' + langKey).replace(/[\.\[\]]/g, '#')];
                             langValues.push(value);
                             // content.content = {...content.content, [path]: value}
-                            writeValue(obj.content, langKey, value)
+                            JSONUtils.writeValue(JSON_FORMAT, obj.content, langKey, value)
                         }
 
                         writeToFile(langObjects)
@@ -285,17 +261,24 @@ function renderActionMenu(defaultLanguage, langObjects) {
                     })
             }
 
+            // sort
             if (actionAnswers.sort) {
                 const order = actionAnswers.sort;
-                let langValues = []
-                for (let language of langObjects) {
-                    language.content = sortJSON(language.content, order)
-                    langValues.push('Sorted')
-                }
+                Question.confirmQuestionWithPromise(`Do you want to sort by ${order}?`)
+                    .then( () => {
+                        let langValues = []
+                        for (let language of langObjects) {
+                            language.content = JSONUtils.sort(JSON_FORMAT, language.content, order)
+                            langValues.push('Sorted')
+                        }
 
-                writeToFile(langObjects);
-                addChangeLog(chalk.cyan('Sort'), order === 'asc'? 'A-Z':'Z-A', langValues);
-                renderActionMenu(defaultLanguage, langObjects);
+                        writeToFile(langObjects);
+                        addChangeLog(chalk.cyan('Sort'), order === 'asc'? 'A-Z':'Z-A', langValues);
+                        renderActionMenu(defaultLanguage, langObjects);
+                    })
+                    .catch(() => {
+                        renderActionMenu(defaultLanguage, langObjects);
+                    });
             }
         })
 }
