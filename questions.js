@@ -268,7 +268,7 @@ function createActionQuestions(keyList, jsonFormat) {
                 return current.action === 'edit'
             },
             suggestOnly: false,
-            source: (current, input) => createAutocompleteSource(current, input, keyList, jsonFormat),
+            source: (current, input) => createSearchAutocompleteSource(current, input, keyList, jsonFormat),
             validate: keyNameValidate
         },
         {
