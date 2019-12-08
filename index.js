@@ -28,15 +28,22 @@ let changeLogs = [
 
 renderMenu();
 
-
+function shortedLang(lang) {
+    if (lang.length > 20) {
+        return lang.substring(0, 20) + '...'
+    }
+    return lang
+}
 
 // functions
 function addChangeLog(action, key, langs) {
-    changeLogs = [...changeLogs, [action, key, ...langs]]
+    const shortedLangs = langs.map(shortedLang);
+    changeLogs = [...changeLogs, [action, key, ...shortedLangs]]
 }
 
 function modifyLangCol(langs) {
-    changeLogs[0] = ['Action', 'Lang Key', ...langs]
+    const shortedLangs = langs.map(shortedLang);
+    changeLogs[0] = ['Action', 'Lang Key', ...shortedLangs]
 }
 
 
