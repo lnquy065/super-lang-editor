@@ -10,6 +10,14 @@ CLI editor using for edit multi language files. Start SuperLangEditor at every w
  - Search by key name (v1.4.2)
  - Naming convention converter (v1.4.0)
  
+ ##### Features
+ - Search by key 
+ - Edit values 
+ - Rename/move key 
+ - Remove key 
+ - Add new key/values 
+ - Sort by key 
+ - Key naming convention converter 
 ```
   ____                                  _                             
  / ___|   _   _   _ __     ___   _ __  | |       __ _   _ __     __ _ 
@@ -17,37 +25,18 @@ CLI editor using for edit multi language files. Start SuperLangEditor at every w
   ___) | | |_| | | |_) | |  __/ | |    | |___  | (_| | | | | | | (_| |
  |____/   \__,_| | .__/   \___| |_|    |_____|  \__,_| |_| |_|  \__, |
                  |_|                                            |___/ 
-======================================================================
-? Select action:  (Use arrow keys)
-❯ Search by key 
-  Edit values 
-  Rename/move key 
-  Remove key 
-  Add new key/values 
-  Sort by key 
-  Key naming convention converter 
-  Exit
-
 ```
  
 ### Installation
 > npm install super-lang-editor -g
 
 ### Usage
-Start it from terminal
+At the root folder of your project. Start it from terminal
 > super-lang
 
 - At start screen, please choose i18next format that you are using first.
 
 ```$xslt
-  ____                                  _                             
- / ___|   _   _   _ __     ___   _ __  | |       __ _   _ __     __ _ 
- \___ \  | | | | | '_ \   / _ \ | '__| | |      / _` | | '_ \   / _` |
-  ___) | | |_| | | |_) | |  __/ | |    | |___  | (_| | | | | | | (_| |
- |____/   \__,_| | .__/   \___| |_|    |_____|  \__,_| |_| |_|  \__, |
-                 |_|                                            |___/ 
-  Version: 1.1.0 by lnquy065
-======================================================================
 ? Choose JSON format:  (Use arrow keys)
 ❯ Nesting 
   Inline
@@ -92,7 +81,7 @@ Inline format
   public/locales/vi.json - (Vietnamese) 
 ```
 
-- Select action
+- Now we can select action
 
 ```$xslt
 ? Select action:  (Use arrow keys)
@@ -104,69 +93,21 @@ Inline format
   Exit 
 ```
 ### Features
-In this section we will using language files below for example. Assuming that we already have two language files in our project.
-```
-en.json
-{
-    "home": {
-        "hello": "Hello",
-        "world": "World"
-        }
-}
-
-vi.json
-{
-  "home": {
-    "hello": "Xin chào",
-    "world": "Thế giới"
-  }
-}
-```
-#### Start
-- Start SLE from terminal. At start screen we select "Nesting"
-```
-? Select JSON format:  (Use arrow keys)
-❯ Nesting 
-  Inline 
-```
-- Select all language files
-```
-? Select JSON format:  Nesting
-? Select language files:  (Press <space> to select, <a> to toggle all, <i> to invert selection)
-❯◉ assets/en.json - (English)
- ◉ assets/vi.json - (Vietnamese)
-```
-- Select 'English' file for default
-```
-? Select JSON format:  Nesting
-? Select language files:  en, vi
-? Select default language:  (Use arrow keys)
-❯ assets/en.json - (English) 
-  assets/vi.json - (Vietnamese) 
-```
-- Now we can modify those files
-```
-? Select action:  (Use arrow keys)
-❯ Edit 
-  Rename/Move 
-  Remove 
-  Add New 
-  Sort 
-  Exit 
-```
 #### Search
-Support search by language key name. Allow multiple nested level, nested key will be combine to one line that separate by ".".
-Let's search "hello" that was nested in "home":
+![Alt text](readme/search.gif?raw=true "Search")
+
+Support search by language key name. All nested object will be flatted to one level, it will be combined by dot.
+Let's search "newsTitle" that was nested in "pages":
 ```
 ? Select action:  Search by key
-? Select language key name to view values: home
-❯ home.hello
+? Select language key name to view values: newsTitle
+❯ pages.newsTitle
 ```
 ```
 ? Select action:  Search by key
-? Select language key name to view values: home.hello
-[English - assets/en.json] home.hello: Hello
-[Vietnamese - assets/vi.json] home.hello: Xin chào
+? Select language key name to view values: pages.newsTitle
+[English - en.json] pages.newsTitle: News
+[Vietnamese - vi.json] pages.newsTitle: Tin tuc
 ? Enter to back!: 
 ```
 Or search with multiple keyword
@@ -178,45 +119,54 @@ Or search with multiple keyword
   page.setting.information.title 
 ```
 #### Edit
-Now we will edit "home.hello": "Hello" to "Say hello" in both of language.
-- Input language key name need to edit value. All key name will be listed below for, you can use 'Tab' key to autocomplete.
+![Alt text](readme/edit.gif?raw=true "Edit")
+
+Now we will edit "pages.homeTitle" to:
+```
+en.json
+pages: {
+    homeTitle: "Home Page"
+}
+vi.json
+pages: {
+    homeTitle: "Trang chu moi"
+}
+```
+- Input language key name need to edit value. All key name will be listed below for, select key need to edit
 ```
 ? Select action:  Edit
-? Input language key name to edit: home.hello
-❯ home.hello 
-  home.world 
+? Input language key name to edit: pages.home
+❯ pages.homeTitle
 ```
 - After input key name, SLE will shows questions for input new value for each languages file with default value.
 ```
 ? Select action:  Edit
-? Input language key name to edit: home.hello
-? [English - assets/en.json] home.hello: Say hello
-? [Vietnamese - assets/vi.json] home.hello: Say hello
+? Input language key name to edit: pages.homeTitle
+? [English - en.json] pages.homeTitle: Home page
+? [Vietnamese - vi.json] pages.homeTitle: Trang chu moi
 ```
-- Now, "home.hello" has been changed to "Say hello" in both of language files.
 #### Add New
-We will add new language key with name is "myName" that be nested in "home". Value's both of files is "My name".
-- Input new language key. Note that all nested key will be showed by "dot".
+![Alt text](readme/add.gif?raw=true "Add")
+We will add new object to "pageComponents" for all language files:
+- Before
 ```
-? Select action:  Add New
-? Input language key name to add: home.myName
+"pageComponents": {
+    "news": "news",
+    "home": {
+        "title": "Home Page"
+    }
+}
 ```
-- As the same with edit. We will input new value for each language file.
+- After
 ```
-? Select action:  Add New
-? Input language key name to add: home.myName
-? [English - assets/en.json] home.myName: My Name
-? [Vietnamese - assets/vi.json] home.myName: My Name
-```
-- Now, new nested key will be added to all files.
-```
-en.json
-{
-  "home": {
-    "hello": "Say hello",
-    "world": "World",
-    "myName": "My Name"
-  }
+"pageComponents": {
+    "news": "news",
+    "home": {
+        "title": "Home Page"
+    },
+    "about": {
+        "title": "About
+    }
 }
 ```
 #### Remove
@@ -225,133 +175,91 @@ You can use this feature for remove value of a key or remove an object.
 ```
 ? Select action:  Remove
 ? Input language key name to remove: 
-❯ home.hello 
-  home.world 
-  home.myName 
+❯ pageComponents.news
+  pageComponents.home.title
+  pageComponents.about.title
 ```
-Note: If you input "home.hello", nested key is hello will be remove. But if you input "home", "home" object will flies away.
+Note: If you input "pageComponents.about.title", nested key is "title" will be remove. But if you input "pageComponents.about", "pageComponents.about" object will flies away.
 ```
-- When remove "home.hello"
+- When remove "pageComponents.about.title"
 en.json
 {
-  "home": {
-    "world": "World",
-    "myName": "My Name"
-  }
+    "pageComponents": {
+        "news": "news",
+        "home": {
+            "title": "Home Page"
+        },
+        "about": {}
+    }
 }
 
-- When remove "home"
+- When remove "pageComponents.about"
 en.json
 {
-
+    "pageComponents": {
+        "news": "news",
+        "home": {
+            "title": "Home Page"
+        }
+    }
 }
 ```
-- Now we input "home.hello", it will be removed in all files.
 #### Rename/Move
 ##### Rename
-Now we will rename "home.world" to "home.myWorld"
-- Input language key name:
+![Alt text](readme/rename.gif?raw=true "Rename")
+We will rename "page" to "pageComponents", "pageComponents.newsTitle" to "pageComponents.news"
+- Before
 ```
-? Select action:  Rename/Move
-? Input language key name to rename: home.world
-  home.hello 
-❯ home.world
+    page: {
+        newsTitle: "News",
+        homeTitle: "Home title"
+    }
 ```
-- Input new key name
+- After
 ```
-? Select action:  Rename/Move
-? Input language key name to rename: home.world
-? Input new language key name:  home.myWorld
+ pageComponents: {
+        news: "News",
+        homeTitle: "Home title"
+    }
 ```
 ##### Move
-In this step, we will move "home.myName" to "profile.myName". Result will be:
-Note: "profile" will be created if not exists.
-```
-Before move
-{
-  "home": {
-    "hello": "Say hello",
-    "world": "World",
-    "myName": "My Name"
-  }
-}
-
-Result
-{
-  "home": {
-    "hello": "Say hello",
-    "world": "World"
-  },
-  "profile: {
-    "myName": "My Name"
-  }
-}
-```
-- Input key name that want to move:
-```
-? Select action:  Rename/Move
-? Input language key name to rename/move: home.myName
-❯ home.myName 
-```
-- Input new key name
-```
-? Select action:  Rename/Move
-? Input language key name to rename/move: home.myName
-? Input new language key name:  profile.myName
-```
-Note: You can move an object with this feature. Now try to move "home" to inside "profile".
-```
-? Select action:  Rename/Move
-? Input language key name to rename/move: home
-? Input new language key name:  profile.home
-```
-And result...
+![Alt text](readme/move.gif?raw=true "move")
+Now, we will move "buttons" into "pageComponents"
+- Before
 ```
 {
-  "profile": {
-    "myName": "My Name",
-    "home": {
-      "hello": "Say hello",
-      "myWorld": "World"
-    }
-  }
-}
-```
-#### Sort by key name
-- All language files will be sorted by key name (A-Z | Z-A)
-```
-? Select action:  Sort
-? Sort all language keys: (Use arrow keys)
-❯ A-Z 
-  Z-A 
-```
-- With A-Z
-```
-{
-  "profile": {
-    "home": {
-      "hello": "Say hello",
-      "myWorld": "World"
+    buttons: {
+        okLabel: "Ok",
+        cancelLabel: "Cancel"
     },
-    "myName": "My Name"
-  }
+    pageComponents: {
+          news: "News",
+          homeTitle: "Home title"
+    }
 }
 ```
-
-- With Z-A
+- After
 ```
 {
-  "profile": {
-    "myName": "My Name",
-    "home": {
-      "myWorld": "World",
-      "hello": "Say hello"
+    pageComponents: {
+          news: "News",
+          homeTitle: "Home title",
+         buttons: {
+                okLabel: "Ok",
+                cancelLabel: "Cancel"
+            }
     }
-  }
 }
 ```
+- Or we can separate object like this
+![Alt text](readme/moveToNested.gif?raw=true "moveToNested")
+#### Sort by key name
+![Alt text](readme/sort.gif?raw=true "sort")
+- All language files will be sorted by key name (A-Z | Z-A)
 #### Naming convention converter
-We support 3 of naming conventions
+![Alt text](readme/convertKey.gif?raw=true "convertKey")
+
+SLE support 3 of naming conventions
 ```
 ? Convert all language key name to: (Use arrow keys)
 ❯ Camel case 
@@ -391,8 +299,6 @@ We support 3 of naming conventions
   }
 }
 ```
-
-
 #### Show change logs
 - Change logs table will shows up after language files were modified.
 
