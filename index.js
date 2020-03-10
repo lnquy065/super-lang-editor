@@ -306,10 +306,10 @@ function renderMenu() {
 
             JSON_FORMAT = languageConfigAnswers.jsonType;
             LANG_LIST = langList;
-            DEFAULT_LANG = langList.indexOf(languageConfigAnswers.defaultLanguage);
+            DEFAULT_LANG = langList[0];
 
             modifyLangCol(langList);
-            renderActionMenu(languageConfigAnswers.defaultLanguage, langObjects);
+            renderActionMenu(DEFAULT_LANG, langObjects);
         })
 
 }

@@ -64,21 +64,21 @@ module.exports = {
 
             }
         },
-        {
-            name: 'defaultLanguage',
-            type: 'list',
-            message: 'Select default language: ',
-            choices: function (current) {
-                return current.languageFiles.map(file => {
-                    const langName = ISO6391.getName(path.basename(file, '.json'))
-                    return {
-                        name: langName? `${file} - (${langName})`:file,
-                        value: file,
-                        short: path.basename(file, '.json')
-                    }
-                })
-            }
-        }
+        // {
+        //     name: 'defaultLanguage',
+        //     type: 'list',
+        //     message: 'Select default language: ',
+        //     choices: function (current) {
+        //         return current.languageFiles.map(file => {
+        //             const langName = ISO6391.getName(path.basename(file, '.json'))
+        //             return {
+        //                 name: langName? `${file} - (${langName})`:file,
+        //                 value: file,
+        //                 short: path.basename(file, '.json')
+        //             }
+        //         })
+        //     }
+        // }
     ],
     createActionQuestions: createActionQuestions,
     createLangObj: createLangObj,
