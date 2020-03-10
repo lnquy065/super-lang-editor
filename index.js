@@ -28,6 +28,8 @@ let changeLogs = [
 
 renderMenu();
 
+// ========== FUNCTIONS =============
+
 function shortedLang(lang) {
     if (lang.length > 20) {
         return lang.substring(0, 20) + '...'
@@ -50,10 +52,10 @@ function modifyLangCol(langs) {
 function renderConfig() {
     if (JSON_FORMAT) {
         console.log(chalk.magenta('  JSON Format: ' + JSON_FORMAT));
-        console.log(chalk.magenta('  Language list: '));
-        for (const [index, file] of LANG_LIST.entries()) {
-            console.log(chalk.magenta(`    - ${index === DEFAULT_LANG? '['+file+']':file}`));
-        }
+        // console.log(chalk.magenta('  Language list: '));
+        // for (const [index, file] of LANG_LIST.entries()) {
+        //     console.log(chalk.magenta(`    - ${index === DEFAULT_LANG? '['+file+']':file}`));
+        // }
     }
 }
 
@@ -296,13 +298,17 @@ function renderMenu() {
     inquirer.prompt(Question.languageConfigQuestions)
         .then(languageConfigAnswers => {
             const langList = languageConfigAnswers.languageFiles
-            const langObjects = langList.map(file => {
-                return {
-                    path: file,
-                    name: ISO6391.getName(path.basename(file, '.json')),
-                    content: Question.createLangObj(file)
-                }
-            })
+            try {
+                const langObjects = langList.map(file => {
+                    return {
+                        path: file,
+                        name: ISO6391.getName(path.basename(file, '.json')),
+                        content: Question.createLangObj(file)
+                    }
+                })
+            } catch (e) {
+                console.error(e.message)
+            }
 
             JSON_FORMAT = languageConfigAnswers.jsonType;
             LANG_LIST = langList;
@@ -310,6 +316,7 @@ function renderMenu() {
 
             modifyLangCol(langList);
             renderActionMenu(DEFAULT_LANG, langObjects);
+            
         })
 
 }
