@@ -15,7 +15,7 @@
     "vue"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node index.js"
   },
   "repository": {
@@ -47,5 +47,8 @@
   "bugs": {
     "url": "https://github.com/lnquy065/super-lang-editor/issues"
   },
-  "homepage": "https://github.com/lnquy065/super-lang-editor"
+  "homepage": "https://github.com/lnquy065/super-lang-editor",
+  "devDependencies": {
+    "jest": "^25.1.0"
+  }
 }
