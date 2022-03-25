@@ -8,6 +8,7 @@ const fs = require('fs');
 const ISO6391 = require('iso-639-1');
 const _ = require('lodash');
 const inquirer = require('inquirer');
+const Constants = require('./utils/constants');
 
 
 const directoryPath = path.join(process.cwd(), '/');
@@ -36,14 +37,14 @@ module.exports = {
             message: 'Select JSON format: ',
             choices: [
                 {
-                    name: 'Nesting',
+                    name: 'Nesting (The parent key and the child key are nested)',
                     value: 'nesting'
                 },
                 {
-                    name: 'Inline',
+                    name: 'Inline (The parent key and the child key are separated by a ".")',
                     value: 'inline'
                 },
-                ]
+            ]
         },
         {
             name: 'languageFiles',
@@ -55,7 +56,7 @@ module.exports = {
                     .map(file => {
                         const langName = ISO6391.getName(path.basename(file, '.json'))
                         return {
-                            name: langName? `${file} - (${langName})`:file,
+                            name: langName ? `${file} - (${langName})` : file,
                             value: file,
                             checked: !!langName,
                             short: path.basename(file, '.json')
@@ -103,7 +104,7 @@ function confirmQuestionWithPromise(question) {
         type: 'confirm',
         message: question
     }];
-    return new Promise( (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         inquirer.prompt(questionConfig)
             .then(result => {
                 if (result.confirm) {
@@ -149,7 +150,7 @@ function extractKeys(json, jsonFormat = 'nesting', prefix = '') {
             const keyList = Object.keys(json);
             let resultStr = [];
             for (const key of keyList) {
-                resultStr = [...resultStr, ...extractKeys(json[key], 'nesting', `${(prefix !== ''? prefix + '.':'')}` + key)]
+                resultStr = [...resultStr, ...extractKeys(json[key], 'nesting', `${(prefix !== '' ? prefix + '.' : '')}` + key)]
             }
             return resultStr;
         }
@@ -170,57 +171,68 @@ function fileNameValidate(fileName) {
     }
     return 'Please input file name!'
 }
-function createActionQuestions(keyList, jsonFormat) {
+function createActionQuestions(keyList, jsonFormat, recent) {
+    let choices = [
+        {
+            name: '[🔍] Search by key',
+            value: 'search',
+            short: `Search by key [Press 'ESC' to back to main menu]`
+        },
+        {
+            name: '[➕] Add new key/values',
+            value: 'add',
+            short: `Add new key/values [Press 'ESC' to back to main menu]`
+        },
+        {
+            name: '[🔧] Edit values',
+            value: 'edit',
+            short: `Edit values [Press 'ESC' to back to main menu]`
+        },
+        {
+            name: '[🔨] Rename/move key',
+            value: 'rename',
+            short: `Rename/move key [Press 'ESC' to back to main menu]`
+        },
+        {
+            name: '[💥] Remove key',
+            value: 'remove',
+            short: `Remove key [Press 'ESC' to back to main menu]`
+        },
+        {
+            name: '[🔃] Sort by key',
+            value: 'sort',
+            short: `Sort by key`
+        },
+        {
+            name: '[🔠] Key naming convention converter',
+            value: 'namingConventionConverter',
+            short: `Naming convention converter`
+        },
+        new inquirer.Separator(),
+        {
+            name: '[❌] Exit',
+            value: 'exit',
+            short: 'Exit'
+        },
+        {
+            name: '[👀] About',
+            value: 'about',
+            short: 'About'
+        }
+    ]
+
+    if (recent) {
+        choices = choices.sort((a, b) => a === recent ? 1 : 0)
+    }
+
+
     return [
         {
             name: 'action',
             type: 'list',
             message: 'Select action: ',
-            choices: [
-                {
-                    name: 'Search by key',
-                    value: 'search',
-                },
-                {
-                    name: 'Edit values',
-                    value: 'edit',
-                    short: 'Edit'
-                },
-                {
-                    name: 'Rename/move key',
-                    value: 'rename',
-                    short: 'Rename/Move'
-                },
-                {
-                    name: 'Remove key',
-                    value: 'remove',
-                    short: 'Remove'
-                },
-                {
-                    name: 'Add new key/values',
-                    value: 'add',
-                    short: 'Add New'
-                },
-                {
-                    name: 'Sort by key',
-                    value: 'sort',
-                    short: 'Sort'
-                },
-                {
-                    name: 'Key naming convention converter',
-                    value: 'namingConventionConverter',
-                    short: 'Naming convention converter'
-                },
-                // {
-                //     name: 'Clone to',
-                //     value: 'cloneTo',
-                // },
-                {
-                    name: 'Exit',
-                    value: 'exit',
-                    short: 'Exit'
-                }
-            ]
+            choices: choices,
+            loop: false
         },
         {
             name: 'sort',
@@ -237,6 +249,11 @@ function createActionQuestions(keyList, jsonFormat) {
                 {
                     name: 'Z-A',
                     value: 'desc'
+                },
+                new inquirer.Separator(),
+                {
+                    name: 'Back to main menu',
+                    value: Constants.ESCAPE_KEY_MSG
                 }
             ]
         },
@@ -302,7 +319,8 @@ function createActionQuestions(keyList, jsonFormat) {
             },
             suggestOnly: true,
             source: (current, input) => createAutocompleteSource(current, input, keyList, jsonFormat),
-            validate: keyNameValidate
+            validate: keyNameValidate,
+            emptyText: '+ New key'
         },
         {
             name: 'namingConvention',
@@ -323,6 +341,11 @@ function createActionQuestions(keyList, jsonFormat) {
                 {
                     name: 'Snake case',
                     value: 'snakeCase'
+                },
+                new inquirer.Separator(),
+                {
+                    name: 'Back to main menu',
+                    value: Constants.ESCAPE_KEY_MSG
                 }
             ]
         }

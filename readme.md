@@ -1,7 +1,7 @@
 # SuperLangEditor (SLE)
-CLI editor using for edit multi language files. Start SuperLangEditor at every where in your project, it will scans all of language files. Now you can modify those files by features below.
+CLI editor using for edit multi language files. Start SuperLangEditor at the root folder in your project, it will scans all of language files. Now you can modify those files by features below.
 
- - Auto scan language file (ISO6391 standard or JSON extension)(v1.4.1).
+ - Auto scan language files (ISO6391 standard or JSON extension)(v1.4.1).
  - Supports edit, remove, add new language key with autocomplete hint.
  - Show change logs after modified.
  - Supports Nesting and Inline format (v1.1.6)
@@ -18,6 +18,9 @@ CLI editor using for edit multi language files. Start SuperLangEditor at every w
  - Add new key/values 
  - Sort by key 
  - Key naming convention converter 
+
+### Screenshoot
+
 ```
   ____                                  _                             
  / ___|   _   _   _ __     ___   _ __  | |       __ _   _ __     __ _ 
@@ -25,6 +28,18 @@ CLI editor using for edit multi language files. Start SuperLangEditor at every w
   ___) | | |_| | | |_) | |  __/ | |    | |___  | (_| | | | | | | (_| |
  |____/   \__,_| | .__/   \___| |_|    |_____|  \__,_| |_| |_|  \__, |
                  |_|                                            |___/ 
+  Version: 1.5.0 by lnquy065
+  JSON Format: nesting
+======================================================================
+? Select action:  (Use arrow keys)
+❯ [🔍] Search by key 
+  [➕] Add new key/values 
+  [🔧] Edit values 
+  [🔨] Rename/move key 
+  [💥] Remove key 
+  [🔃] Sort by key 
+  [🔠] Key naming convention converter 
+(Move up and down to reveal more choices)
 ```
  
 ### Installation
@@ -37,9 +52,9 @@ At the root folder of your project. Start it from terminal
 - At start screen, please choose i18next format that you are using first.
 
 ```$xslt
-? Choose JSON format:  (Use arrow keys)
-❯ Nesting 
-  Inline
+? Select JSON format:  (Use arrow keys)
+❯ Nesting (The parent key and the child key are nested) 
+  Inline (The parent key and the child key are separated by a ".") 
 ```
 
 Nesting format
@@ -72,28 +87,21 @@ Inline format
 ```
 
 
-- Default language. Select default language, SuperLang will base on it to suggests language key name for next steps.
-
-```$xslt
-? Select language files:  en, vi
-? Select default language:  (Use arrow keys)
-❯ public/locales/en.json - (English) 
-  public/locales/vi.json - (Vietnamese) 
-```
-
 - Now we can select action
 
 ```$xslt
 ? Select action:  (Use arrow keys)
-❯ Edit 
-  Rename/Move 
-  Remove 
-  Add New 
-  Sort 
-  Exit 
+❯ [🔍] Search by key 
+  [➕] Add new key/values 
+  [🔧] Edit values 
+  [🔨] Rename/move key 
+  [💥] Remove key 
+  [🔃] Sort by key 
+  [🔠] Key naming convention converter 
+(Move up and down to reveal more choices)
 ```
 ### Features
-#### Search
+#### [🔍] Search by key 
 ![Alt text](readme/search.gif?raw=true "Search")
 
 Support search by language key name. All nested object will be flatted to one level, it will be combined by dot.
@@ -118,7 +126,7 @@ Or search with multiple keyword
   page.setting.password.title 
   page.setting.information.title 
 ```
-#### Edit
+#### [🔧] Edit values 
 ![Alt text](readme/edit.gif?raw=true "Edit")
 
 Now we will edit "pages.homeTitle" to:
@@ -134,7 +142,7 @@ pages: {
 ```
 - Input language key name need to edit value. All key name will be listed below for, select key need to edit
 ```
-? Select action:  Edit
+? Select action:  Edit values [Press 'ESC' to back to main menu]
 ? Input language key name to edit: pages.home
 ❯ pages.homeTitle
 ```
@@ -145,7 +153,7 @@ pages: {
 ? [English - en.json] pages.homeTitle: Home page
 ? [Vietnamese - vi.json] pages.homeTitle: Trang chu moi
 ```
-#### Add New
+#### [➕] Add new key/values 
 ![Alt text](readme/add.gif?raw=true "Add")
 We will add new object to "pageComponents" for all language files:
 - Before
@@ -169,11 +177,11 @@ We will add new object to "pageComponents" for all language files:
     }
 }
 ```
-#### Remove
+#### [💥] Remove key
 You can use this feature for remove value of a key or remove an object.
 - Input name of key that you want to remove:
 ```
-? Select action:  Remove
+? Select action:  Remove key [Press 'ESC' to back to main menu]
 ? Input language key name to remove: 
 ❯ pageComponents.news
   pageComponents.home.title
@@ -204,7 +212,7 @@ en.json
     }
 }
 ```
-#### Rename/Move
+#### [🔨] Rename/move key
 ##### Rename
 ![Alt text](readme/rename.gif?raw=true "Rename")
 We will rename "page" to "pageComponents", "pageComponents.newsTitle" to "pageComponents.news"
@@ -253,10 +261,10 @@ Now, we will move "buttons" into "pageComponents"
 ```
 - Or we can separate object like this
 ![Alt text](readme/moveToNested.gif?raw=true "moveToNested")
-#### Sort by key name
+#### [🔃] Sort by key
 ![Alt text](readme/sort.gif?raw=true "sort")
 - All language files will be sorted by key name (A-Z | Z-A)
-#### Naming convention converter
+#### [🔠] Key naming convention converter 
 ![Alt text](readme/convertKey.gif?raw=true "convertKey")
 
 SLE support 3 of naming conventions
@@ -300,7 +308,7 @@ SLE support 3 of naming conventions
 }
 ```
 #### Show change logs
-- Change logs table will shows up after language files were modified.
+- Change logs table will shows up after language files were modified. From this table, you can double click into language key to select and copy new language key, then you paste into your code.
 
 ```
 Change logs: 
@@ -330,3 +338,6 @@ Change logs:
 ##### 1.4.2:
 + Improve search feature, allow multiple keywords.
 + Change input to select for edit values feature.
+##### 1.5.0:
++ Now you can cancel any action by use 'ESC' key or 'back' option.
++ Add icons.
