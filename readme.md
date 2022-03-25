@@ -19,7 +19,7 @@ CLI editor using for edit multi language files. Start SuperLangEditor at the roo
  - Sort by key 
  - Key naming convention converter 
 
-### Screenshoot
+### Screenshot
 
 ```
   ____                                  _                             
